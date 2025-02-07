@@ -1,3 +1,4 @@
+#include <string>
 #include "RecordType.hpp"
 
 const std::string LayoutType{"layout"};

@@ -1,5 +1,5 @@
 #include "MediaRecord.hpp"
-
+#include <memory>
 #include "RecordVisitor.hpp"
 
 using namespace Stats;

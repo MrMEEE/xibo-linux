@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <cstdint>
+using std::uint32_t;
 
 struct KeyboardKey
 {

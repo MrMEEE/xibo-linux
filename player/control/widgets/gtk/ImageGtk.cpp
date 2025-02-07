@@ -1,5 +1,6 @@
 #include "control/widgets/gtk/ImageGtk.hpp"
-
+#include <cstdint>
+using std::uint32_t;
 #include "common/fs/FilePath.hpp"
 #include "common/fs/FileSystem.hpp"
 #include "common/types/Uri.hpp"

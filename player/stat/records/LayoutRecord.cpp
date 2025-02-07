@@ -1,3 +1,4 @@
+#include <string>
 #include "LayoutRecord.hpp"
 
 #include "RecordVisitor.hpp"

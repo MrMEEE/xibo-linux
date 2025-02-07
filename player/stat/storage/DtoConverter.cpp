@@ -1,3 +1,4 @@
+#include <string>
 #include "stat/storage/DtoConverter.hpp"
 
 using namespace Stats;

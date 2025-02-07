@@ -1,13 +1,14 @@
 name: xibo-player
-base: core20
+base: core24
 version: 1.8-R7
 summary: Xibo Linux Player
 description: Xibo for Linux Digital Signage Player
 grade: stable
 confinement: strict
 
-architectures:
-  - build-on: amd64
+platforms:
+  amd64:
+    build-on: amd64
 
 slots:
   dbus-daemon: # name this whatever you want
@@ -20,19 +21,19 @@ apps:
     command: usr/bin/snap_run.sh xibo-watchdog
     plugs: [gsettings, network, home, audio-playback, screen-inhibit-control, framebuffer, opengl]
     slots: [dbus-daemon]
-    extensions: [gnome-3-38]
+    extensions: [gnome]
 
   disabled-watchdog:
     command: usr/bin/snap_run.sh xibo-watchdog --disable-restart
     plugs: [gsettings, network, home, audio-playback, screen-inhibit-control, framebuffer, opengl]
     slots: [dbus-daemon]
-    extensions: [gnome-3-38]
+    extensions: [gnome]
 
   options:
     command: usr/bin/xibo-options
     plugs: [gsettings, network, home]
     slots: [dbus-daemon]
-    extensions: [gnome-3-38]
+    extensions: [gnome]
 
 parts:
   base:
@@ -50,13 +51,12 @@ parts:
       - cmake
       - g++
 
-  # FIXME: use from APT
   boost:
     plugin: nil
     override-pull: |
-      add-apt-repository ppa:mhier/libboost-latest
+      add-apt-repository -y ppa:mhier/libboost-latest
       apt-get update
-      apt-get install -y libboost1.70-dev
+      apt-get install -y libboost1.83-dev
     after: [base]
 
   # FIXME: don't build in pull step
@@ -95,13 +95,26 @@ parts:
     after: [base]
 
   # FIXME: this should be replaced with libwebkit2gtk
-  webkitgtk3:
+  #webkitgtk3:
+  #  plugin: nil
+  #  override-pull: |
+  #    echo "deb http://ru.archive.ubuntu.com/ubuntu/ bionic main universe" >> /etc/apt/sources.list
+  #    apt-get update
+  #    apt-get install -y libwebkitgtk-3.0-dev
+  #  after: [base]
+
+  webkit2gtk:
     plugin: nil
     override-pull: |
-      echo "deb http://ru.archive.ubuntu.com/ubuntu/ bionic main universe" >> /etc/apt/sources.list
       apt-get update
-      apt-get install -y libwebkitgtk-3.0-dev
-    after: [base]
+      apt-get install -y libwebkit2gtk-4.1-dev
+
+  freeglut:
+    plugin: nil
+    override-pull: |
+      apt update
+      apt install -y freeglut3-dev
+      ln -s /usr/lib/x86_64-linux-gnu/libglut.so.3.12.0 /usr/lib/x86_64-linux-gnu/libglut.so.3  
 
   player:
     source: player
@@ -113,12 +126,13 @@ parts:
       - -DCMAKE_INSTALL_PREFIX=/usr
     stage-packages:
       - libglu1-mesa
-      - freeglut3
+      - freeglut3-dev
       - libzmq5
-      - libboost1.70
+      - libboost1.83-dev
       - libgtkmm-3.0-1v5
       - libcanberra-gtk3-module
-      - libwebkitgtk-3.0-0
+      #- libwebkitgtk-3.0-0
+      - libwebkit2gtk-4.1-0
       - libgpm2 # gstreamer warning
       - libslang2 # gstreamer warning
       - gstreamer1.0-plugins-good
@@ -126,8 +140,10 @@ parts:
       - gstreamer1.0-gl
       - gstreamer1.0-libav
       - gstreamer1.0-gtk3
-      - libspdlog1
+      - libspdlog1.12
     build-packages:
+      - libboost1.83-all-dev
+      - libwebkit2gtk-4.1-0
       - libgtkmm-3.0-dev 
       - libglibmm-2.4-dev
       - libzmq3-dev
@@ -137,4 +153,4 @@ parts:
       - libgstreamer-plugins-good1.0-dev
       - libgstreamer-plugins-base1.0-dev
       - libgstreamer1.0-dev
-    after: [webkitgtk3, boost, date-tz, sqlite-orm] 
+    after: [webkit2gtk, boost, date-tz, sqlite-orm, freeglut] 

@@ -1,7 +1,8 @@
 #pragma once
 
 #include "common/PlayerRuntimeError.hpp"
-
+#include <cstdint>
+using std::uint32_t;
 #include <string>
 
 class ColorToHexConverter

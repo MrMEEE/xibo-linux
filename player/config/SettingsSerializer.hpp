@@ -29,7 +29,7 @@ protected:
         try
         {
             auto root = tree.get_child(RootNode);
-            (loadField(root, fields, std::make_index_sequence<fields.size()>{}), ...);
+            (loadField(root, fields..., std::index_sequence_for<Args...>{}));
         }
         catch (std::exception& e)
         {
@@ -56,7 +56,7 @@ protected:
         XmlNode tree;
 
         auto& root = tree.add_child(RootNode, {});
-        (saveField(root, fields, std::make_index_sequence<fields.size()>{}), ...);
+        (saveField(root, fields..., std::index_sequence_for<Args...>{}));
 
         return tree;
     }
